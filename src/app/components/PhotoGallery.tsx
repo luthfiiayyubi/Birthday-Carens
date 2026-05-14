@@ -23,6 +23,7 @@ interface Photo {
 
 export function PhotoGallery() {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [activePhoto, setActivePhoto] = useState<number | null>(null);
 
   const photos: Photo[] = [
     { id: 1, url: memory1, caption: "si cantik" },
@@ -53,7 +54,14 @@ export function PhotoGallery() {
               delay: index * 0.05,
             }}
             whileHover={{ y: -6 }}
-            onClick={() => setSelectedPhoto(photo)}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => {
+              if (activePhoto === photo.id) {
+                setSelectedPhoto(photo);
+              } else {
+                setActivePhoto(photo.id);
+              }
+            }}
             className="
               relative
               cursor-pointer
@@ -64,18 +72,19 @@ export function PhotoGallery() {
             <img
               src={photo.url}
               alt="memory"
-              className="
+              className={`
                 w-full
                 aspect-square
                 object-cover
                 rounded-[28px]
                 grayscale
-                group-hover:grayscale-0
+                hover:grayscale-0
                 transition-all
                 duration-700
-                group-hover:scale-105
+                hover:scale-105
                 shadow-xl
-              "
+                ${activePhoto === photo.id ? "grayscale-0 scale-105" : ""}
+              `}
             />
 
             <div
@@ -126,10 +135,16 @@ export function PhotoGallery() {
               justify-center
               p-6
             "
-            onClick={() => setSelectedPhoto(null)}
+            onClick={() => {
+              setSelectedPhoto(null);
+              setActivePhoto(null);
+            }}
           >
             <button
-              onClick={() => setSelectedPhoto(null)}
+              onClick={() => {
+                setSelectedPhoto(null);
+                setActivePhoto(null);
+              }}
               className="
                 absolute
                 top-6
